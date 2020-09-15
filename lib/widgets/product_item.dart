@@ -1,37 +1,57 @@
+import 'package:Shop_App/providers/product_provider.dart';
+import 'package:Shop_App/screens/product_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-  final double price;
+  // final String id;
+  // final String title;
+  // final String imageUrl;
+  // final double price;
 
-  const ProductItem({this.id, this.title, this.imageUrl, this.price});
+  // const ProductItem({this.id, this.title, this.imageUrl, this.price});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.all(5),
+    final loadedProduct = Provider.of<ProductProvider>(context, listen: false);
+    print("it rebulds");
+    return ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+              arguments: loadedProduct.id);
+        },
         child: GridTile(
           child: Image.network(
-            imageUrl,
+            loadedProduct.imageUrl,
             fit: BoxFit.cover,
           ),
           footer: GridTileBar(
             title: Text(
-              title,
+              loadedProduct.title,
               textAlign: TextAlign.center,
             ),
-            backgroundColor: Colors.black54,
-            leading: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.favorite),
-            ),
+            backgroundColor: Colors.black87,
+            leading: Consumer<ProductProvider>(
+                // the consumer is alternative of provider.of so we dont rebuild the whole widget just a part of it
+                builder: (context, value, child) => IconButton(
+                      icon: value.isFavorite
+                          ? Icon(Icons.star)
+                          : Icon(Icons.star_border),
+                      color: Theme.of(context).accentColor,
+                      onPressed: () {
+                        value.toggleFavoriteValue();
+                      },
+                    )),
             trailing: IconButton(
               icon: Icon(Icons.shopping_cart),
+              color: Theme.of(context).accentColor,
               onPressed: () {},
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
