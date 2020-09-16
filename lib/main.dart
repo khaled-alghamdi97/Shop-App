@@ -1,5 +1,6 @@
 import 'package:Shop_App/providers/product_provider.dart';
 import 'package:Shop_App/providers/products_provider.dart';
+import 'package:Shop_App/screens/cart_detail.dart';
 import 'package:Shop_App/screens/product_detail_screen.dart';
 import 'package:Shop_App/screens/products_overview_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Cart())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.purple,
@@ -33,7 +35,10 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: ProductOverviewScreen(),
-        routes: {ProductDetailScreen.routeName: (ctx) => ProductDetailScreen()},
+        routes: {
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+          CartDetail.routeName: (ctx) => CartDetail()
+        },
       ),
     );
   }

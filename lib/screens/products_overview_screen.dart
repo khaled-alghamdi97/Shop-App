@@ -1,3 +1,6 @@
+import 'package:Shop_App/screens/cart_detail.dart';
+import 'package:Shop_App/widgets/badge.dart';
+import 'package:Shop_App/providers/cart.dart';
 import 'package:Shop_App/widgets/products_grit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +18,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("My shop"),
@@ -41,6 +45,16 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 value: FilterOption.All,
               )
             ],
+          ),
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartDetail.routeName);
+              },
+              icon: Icon(Icons.shopping_cart),
+            ),
+            builder: (context, value, ch) =>
+                Badge(value: cart.itemsCount.toString(), child: ch),
           )
         ],
       ),
