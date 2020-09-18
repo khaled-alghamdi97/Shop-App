@@ -1,5 +1,5 @@
 import 'package:Shop_App/providers/orders.dart';
-import 'package:Shop_App/providers/product_provider.dart';
+
 import 'package:Shop_App/providers/products_provider.dart';
 import 'package:Shop_App/screens/cart_detail.dart';
 import 'package:Shop_App/screens/edit_product_screen.dart';
@@ -24,9 +24,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: ProductsProvider(),
         ),
-        ChangeNotifierProvider.value(
-            // always use ChangeNotifierProvider.value (casued error).
-            value: ProductProvider()),
         ChangeNotifierProvider.value(value: Cart()),
         ChangeNotifierProvider.value(value: Orders())
       ],
