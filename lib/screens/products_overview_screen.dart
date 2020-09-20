@@ -1,3 +1,4 @@
+import 'package:Shop_App/providers/products_provider.dart';
 import 'package:Shop_App/screens/cart_detail.dart';
 
 import 'package:Shop_App/widgets/app-drawer.dart';
@@ -17,6 +18,12 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var isFavorite = false;
+
+  @override
+  void initState() {
+    Provider.of<ProductsProvider>(context, listen: false).fecthProduct();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
