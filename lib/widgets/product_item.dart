@@ -42,8 +42,13 @@ class ProductItem extends StatelessWidget {
                           ? Icon(Icons.star)
                           : Icon(Icons.star_border),
                       color: Theme.of(context).accentColor,
-                      onPressed: () {
-                        value.toggleFavoriteValue();
+                      onPressed: () async {
+                        try {
+                          await value.toggleFavoriteValue();
+                        } catch (err) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("change favorite is failed")));
+                        }
                       },
                     )),
             trailing: IconButton(
@@ -53,6 +58,7 @@ class ProductItem extends StatelessWidget {
                   cart.addItem(loadedProduct.id, loadedProduct.title,
                       loadedProduct.price);
                   Scaffold.of(context).showSnackBar(SnackBar(
+                    duration: Duration(seconds: 1),
                     content: Text("added to the cart!"),
                     action: SnackBarAction(
                       label: "UNDO",

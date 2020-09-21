@@ -18,10 +18,17 @@ class ProductOverviewScreen extends StatefulWidget {
 
 class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var isFavorite = false;
+  var isFetched = true;
 
   @override
   void initState() {
-    Provider.of<ProductsProvider>(context, listen: false).fecthProduct();
+    Provider.of<ProductsProvider>(context, listen: false)
+        .fecthProduct()
+        .then((value) {
+      setState(() {
+        isFetched = false;
+      });
+    });
     super.initState();
   }
 
@@ -68,7 +75,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(isFavorite),
+      body: isFetched
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(isFavorite),
     );
   }
 }

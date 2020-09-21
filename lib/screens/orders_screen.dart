@@ -4,8 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/order-item.dart' as ord;
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static const routeName = "/orders-screen";
+
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  @override
+  void initState() {
+    Provider.of<Orders>(context, listen: false)
+        .fetchOrders()
+        .then((value) => null);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final order = Provider.of<Orders>(context);

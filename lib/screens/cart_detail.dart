@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/cart-item.dart';
 
-class CartDetail extends StatelessWidget {
+class CartDetail extends StatefulWidget {
   static const routeName = "/cart-detail";
+
+  @override
+  _CartDetailState createState() => _CartDetailState();
+}
+
+class _CartDetailState extends State<CartDetail> {
+  var isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +40,31 @@ class CartDetail extends StatelessWidget {
                       label: Text("\$${cart.getTotalPrice}"),
                     ),
                     Spacer(),
-                    FlatButton(
-                        onPressed: () {
-                          order.addOrder(cart.getItems.values.toList(),
-                              cart.getTotalPrice);
-                          cart.clearCart();
-                        },
-                        child: Text(
-                          "Order Now",
-                          style:
-                              TextStyle(color: Theme.of(context).primaryColor),
-                        ))
+                    isLoading
+                        ? CircularProgressIndicator()
+                        : FlatButton(
+                            onPressed: cart.getItems.length <= 0
+                                ? null
+                                : () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+
+                                    await order.addOrder(
+                                        cart.getItems.values.toList(),
+                                        cart.getTotalPrice);
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    cart.clearCart();
+                                  },
+                            child: Text(
+                              "Order Now",
+                              style: TextStyle(
+                                  color: cart.getItems.length <= 0
+                                      ? Colors.grey
+                                      : Theme.of(context).primaryColor),
+                            ))
                   ],
                 ),
               ),
