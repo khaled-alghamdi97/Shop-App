@@ -12,27 +12,50 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
+  Future _ordersFuture;
+
+  Future obtainOrdersFuture() {
+    return Provider.of<Orders>(context, listen: false).fetchOrders();
+  }
+
   @override
   void initState() {
-    Provider.of<Orders>(context, listen: false)
-        .fetchOrders()
-        .then((value) => null);
+    _ordersFuture = obtainOrdersFuture();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final order = Provider.of<Orders>(context);
+    // final order = Provider.of<Orders>(context);  if we leave this it will casue infinte loop becasue of future bulider
     return Scaffold(
         appBar: AppBar(
           title: Text("Your Orders"),
         ),
         drawer: AppDrawer(),
-        body: ListView.builder(
-          itemBuilder: (context, index) => ord.OrderItem(
-            order: order.getOrders[index],
-          ),
-          itemCount: order.getOrders.length <= 0 ? 0 : order.getOrders.length,
-        ));
+        body: FutureBuilder(
+            future: _ordersFuture,
+            builder: (ctx, futureData) {
+              if (futureData.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (futureData.error != null) {
+                return Center(
+                  child: Text("error in fetching data"),
+                );
+              } else {
+                return Consumer<Orders>(
+                  builder: (context, orderData, child) => ListView.builder(
+                    itemBuilder: (context, index) => ord.OrderItem(
+                      order: orderData.getOrders[index],
+                    ),
+                    itemCount: orderData.getOrders.length <= 0
+                        ? 0
+                        : orderData.getOrders.length,
+                  ),
+                );
+              }
+            }));
   }
 }
