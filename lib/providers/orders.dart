@@ -25,7 +25,7 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchOrders() async {
-    var url = "https://flutter-testing-37474.firebaseio.com/orders/.json";
+    var url = "https://flutter-testing-37474.firebaseio.com/orders/.json/";
 
     List<OrderItem> ordersHolder = [];
 
@@ -45,7 +45,7 @@ class Orders with ChangeNotifier {
                   id: item['id'],
                   price: item['price'],
                   quantity: item['quantity'],
-                  title: item['quantity']))
+                  title: item['title']))
               .toList()));
     });
 
