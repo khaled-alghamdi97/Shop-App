@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'product_provider.dart';
 
 class ProductsProvider with ChangeNotifier {
-  var url = "https://flutter-testing-37474.firebaseio.com/products/.json";
   List<ProductProvider> _products = [
     // ProductProvider(
     //   id: 'p1',
@@ -41,6 +40,9 @@ class ProductsProvider with ChangeNotifier {
     //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
     // ),
   ];
+  final String authToken;
+
+  ProductsProvider(this.authToken, this._products);
 
   List<ProductProvider> get getProducts {
     return [..._products];
@@ -55,6 +57,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fecthProduct() async {
+    final url =
+        "https://flutter-testing-37474.firebaseio.com/products/.json?auth=$authToken";
     try {
       final response = await http.get(url);
       var extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -77,6 +81,8 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> addNewProduct(ProductProvider product) {
+    final url =
+        "https://flutter-testing-37474.firebaseio.com/products/.json?auth=$authToken";
     return http
         .post(url,
             body: json.encode({
