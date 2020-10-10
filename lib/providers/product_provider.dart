@@ -19,15 +19,14 @@ class ProductProvider with ChangeNotifier {
       @required this.price,
       this.isFavorite = false});
 
-  Future<void> toggleFavoriteValue(String authToken) async {
+  Future<void> toggleFavoriteValue(String authToken, String userId) async {
     final url =
-        "https://flutter-testing-37474.firebaseio.com/products/$id/.json/?auth=$authToken";
+        "https://flutter-testing-37474.firebaseio.com/userFavorite/$userId/$id/.json/?auth=$authToken";
     var oldFavoriteValu = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
 
-    final response =
-        await http.patch(url, body: json.encode({"isFavorite": isFavorite}));
+    final response = await http.put(url, body: json.encode(isFavorite));
 
     if (response.statusCode >= 400) {
       isFavorite = oldFavoriteValu;

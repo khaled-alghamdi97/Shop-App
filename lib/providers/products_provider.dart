@@ -41,8 +41,9 @@ class ProductsProvider with ChangeNotifier {
     // ),
   ];
   final String authToken;
+  final String userId;
 
-  ProductsProvider(this.authToken, this._products);
+  ProductsProvider(this.authToken, this.userId, this._products);
 
   List<ProductProvider> get getProducts {
     return [..._products];
@@ -57,21 +58,26 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> fecthProduct() async {
-    final url =
+    var url =
         "https://flutter-testing-37474.firebaseio.com/products/.json?auth=$authToken";
     try {
       final response = await http.get(url);
       var extractedData = json.decode(response.body) as Map<String, dynamic>;
+      url =
+          "https://flutter-testing-37474.firebaseio.com/userFavorite/$userId/.json/?auth=$authToken";
+      final favoriteResponse = await http.get(url);
+      var favoriteData = json.decode(response.body);
 
       List<ProductProvider> loadedProducts = [];
-      extractedData.forEach((key, value) {
+      extractedData.forEach((prodId, value) {
         loadedProducts.add(ProductProvider(
-            id: key,
+            id: prodId,
             description: value['description'],
             price: value['price'],
-            imageUrl: value['imageUrl'],
             title: value['title'],
-            isFavorite: value['isFavorite']));
+            isFavorite:
+                favoriteData == null ? false : favoriteData[prodId] ?? false,
+            imageUrl: value['imageUrl']));
       });
       _products = loadedProducts;
     } catch (error) {

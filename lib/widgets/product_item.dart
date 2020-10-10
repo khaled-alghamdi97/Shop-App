@@ -46,7 +46,8 @@ class ProductItem extends StatelessWidget {
                       color: Theme.of(context).accentColor,
                       onPressed: () async {
                         try {
-                          await value.toggleFavoriteValue(authData.token);
+                          await value.toggleFavoriteValue(
+                              authData.token, authData.userId);
                         } catch (err) {
                           Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text("change favorite is failed")));
