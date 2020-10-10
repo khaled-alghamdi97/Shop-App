@@ -110,7 +110,7 @@ class ProductsProvider with ChangeNotifier {
 
   Future<void> updateProduct(String id, ProductProvider product) async {
     final url =
-        "https://flutter-testing-37474.firebaseio.com/products/$id/.json";
+        "https://flutter-testing-37474.firebaseio.com/products/$id/.json?auth=$authToken";
     await http.patch(url,
         body: json.encode({
           "title": product.title,
@@ -131,7 +131,7 @@ class ProductsProvider with ChangeNotifier {
     var existsingProduct = _products[existingProductIndex];
 
     final url =
-        "https://flutter-testing-37474.firebaseio.com/products/$id/.json/";
+        "https://flutter-testing-37474.firebaseio.com/products/$id/.json/?auth=$authToken";
     _products.removeAt(existingProductIndex);
     notifyListeners();
     final respone = await http.delete(url);

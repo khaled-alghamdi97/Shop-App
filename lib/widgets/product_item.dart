@@ -1,3 +1,4 @@
+import 'package:Shop_App/providers/auth.dart';
 import 'package:Shop_App/providers/cart.dart';
 import 'package:Shop_App/providers/product_provider.dart';
 import 'package:Shop_App/screens/product_detail_screen.dart';
@@ -14,6 +15,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authData = Provider.of<Auth>(context, listen: false);
     final loadedProduct = Provider.of<ProductProvider>(context, listen: false);
     final cart = Provider.of<Cart>(context);
     print("it rebulds");
@@ -44,7 +46,7 @@ class ProductItem extends StatelessWidget {
                       color: Theme.of(context).accentColor,
                       onPressed: () async {
                         try {
-                          await value.toggleFavoriteValue();
+                          await value.toggleFavoriteValue(authData.token);
                         } catch (err) {
                           Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text("change favorite is failed")));

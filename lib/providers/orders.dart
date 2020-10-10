@@ -24,8 +24,13 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  final String authToken;
+
+  Orders(this.authToken, this._orders);
+
   Future<void> fetchOrders() async {
-    var url = "https://flutter-testing-37474.firebaseio.com/orders/.json/";
+    var url =
+        "https://flutter-testing-37474.firebaseio.com/orders/.json/?auth=$authToken";
 
     List<OrderItem> ordersHolder = [];
 
@@ -54,7 +59,8 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartItems, double amount) async {
-    var url = "https://flutter-testing-37474.firebaseio.com/orders/.json";
+    var url =
+        "https://flutter-testing-37474.firebaseio.com/orders/.json?auth=$authToken";
     var order = OrderItem(
         id: DateTime.now().toString(),
         price: amount,
