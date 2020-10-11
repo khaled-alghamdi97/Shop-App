@@ -35,9 +35,15 @@ class _OrdersScreenState extends State<OrdersScreen> {
         body: FutureBuilder(
             future: _ordersFuture,
             builder: (ctx, futureData) {
+              print(futureData);
               if (futureData.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
+                );
+              }
+              if (futureData.data == null) {
+                return Center(
+                  child: Text("No order has been placed yet"),
                 );
               }
               if (futureData.error != null) {

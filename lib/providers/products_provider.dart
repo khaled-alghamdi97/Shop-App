@@ -57,16 +57,23 @@ class ProductsProvider with ChangeNotifier {
     return getProducts.firstWhere((element) => element.id == id);
   }
 
-  Future<void> fecthProduct() async {
+  Future<void> fecthProduct([final filterd = false]) async {
+    final stringSegment =
+        filterd ? 'orderBy="createdBy"&equalTo="$userId"' : "";
+
     var url =
-        "https://flutter-testing-37474.firebaseio.com/products/.json?auth=$authToken";
+        "https://flutter-testing-37474.firebaseio.com/products/.json?auth=$authToken&$stringSegment";
     try {
       final response = await http.get(url);
       var extractedData = json.decode(response.body) as Map<String, dynamic>;
-      url =
+      print(extractedData);
+      if (extractedData == null) {
+        return;
+      }
+      var url2 =
           "https://flutter-testing-37474.firebaseio.com/userFavorite/$userId/.json/?auth=$authToken";
-      final favoriteResponse = await http.get(url);
-      var favoriteData = json.decode(response.body);
+      final favoriteResponse = await http.get(url2);
+      var favoriteData = json.decode(favoriteResponse.body);
 
       List<ProductProvider> loadedProducts = [];
       extractedData.forEach((prodId, value) {
@@ -96,7 +103,8 @@ class ProductsProvider with ChangeNotifier {
               "description": product.description,
               "price": product.price,
               "imageUrl": product.imageUrl,
-              "isFavorite": product.isFavorite
+              "isFavorite": product.isFavorite,
+              "createdBy": userId
             }))
         .then((response) {
       print(json.decode(response.body)["name"]);

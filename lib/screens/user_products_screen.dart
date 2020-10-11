@@ -10,44 +10,54 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = "/user-products";
 
   Future<void> _fetchOnRefresh(BuildContext context) async {
-    await Provider.of<ProductsProvider>(context, listen: false).fecthProduct();
+    await Provider.of<ProductsProvider>(context, listen: false)
+        .fecthProduct(true);
   }
 
   @override
   Widget build(BuildContext context) {
     final products = Provider.of<ProductsProvider>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Your Product"),
-        actions: [
-          FlatButton(
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushNamed(EditProductScreen.routeName);
-            },
-          )
-        ],
-      ),
-      drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _fetchOnRefresh(context),
-        child: ListView.builder(
-          itemBuilder: (context, index) => Column(
-            children: [
-              UserProducts(
-                id: products.getProducts[index].id,
-                title: products.getProducts[index].title,
-                imageUrl: products.getProducts[index].imageUrl,
+        appBar: AppBar(
+          title: Text("Your Product"),
+          actions: [
+            FlatButton(
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
               ),
-              Divider()
-            ],
-          ),
-          itemCount: products.getProducts.length,
+              onPressed: () {
+                Navigator.of(context).pushNamed(EditProductScreen.routeName);
+              },
+            )
+          ],
         ),
-      ),
-    );
+        drawer: AppDrawer(),
+        body: FutureBuilder(
+          future: _fetchOnRefresh(context),
+          builder: (ctx, snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () => _fetchOnRefresh(context),
+                      child: Consumer<ProductsProvider>(
+                        builder: (context, value, child) => ListView.builder(
+                          itemBuilder: (context, index) => Column(
+                            children: [
+                              UserProducts(
+                                id: products.getProducts[index].id,
+                                title: products.getProducts[index].title,
+                                imageUrl: products.getProducts[index].imageUrl,
+                              ),
+                              Divider()
+                            ],
+                          ),
+                          itemCount: products.getProducts.length,
+                        ),
+                      ),
+                    ),
+        ));
   }
 }
