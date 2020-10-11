@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Shop_App/model/http_delete_exiption.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -7,6 +9,7 @@ class Auth with ChangeNotifier {
   String _token;
   String _userId;
   DateTime _expiryDate;
+  Timer _autherTimer;
 
   bool get isAuth {
     return token != null;
@@ -49,6 +52,7 @@ class Auth with ChangeNotifier {
           .add(Duration(seconds: int.parse(decodedResponse['expiresIn'])));
       _userId = decodedResponse['localId'];
       _token = decodedResponse['idToken'];
+      _autoLogOut();
       notifyListeners();
     } catch (error) {
       print(error);
@@ -68,6 +72,19 @@ class Auth with ChangeNotifier {
     _token = null;
     _expiryDate = null;
     _userId = null;
+    if (_autherTimer != null) {
+      _autherTimer.cancel();
+      _autherTimer = null;
+    }
     notifyListeners();
+  }
+
+  void _autoLogOut() {
+    if (_autherTimer != null) {
+      _autherTimer.cancel();
+    }
+    final timeToExpiary = _expiryDate.difference(DateTime.now()).inSeconds;
+
+    _autherTimer = Timer(Duration(seconds: timeToExpiary), logOut);
   }
 }
